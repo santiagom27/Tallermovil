@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.tallerrick"
-        minSdk = 26
+        minSdk = 24
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
@@ -42,6 +42,11 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+
+    //Bono
+    implementation("androidx.compose.foundation:foundation")
+    implementation("androidx.compose.animation:animation")
+    // ----------------------------------------------
 
     // Ktor
     implementation("io.ktor:ktor-client-android:3.4.0")
