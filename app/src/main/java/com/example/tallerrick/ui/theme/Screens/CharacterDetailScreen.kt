@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.example.tallerrick.model.Character
+import android.util.Log
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -32,7 +33,7 @@ fun CharacterDetailScreen(
 ) {
     val context = LocalContext.current
 
-    // LÓGICA DEL BONO: Animación corregida
+    // LÓGICA DEL BONO
     val infiniteTransition = rememberInfiniteTransition(label = "gradiente")
     val offset by infiniteTransition.animateFloat(
         initialValue = 0f,
@@ -44,7 +45,7 @@ fun CharacterDetailScreen(
         label = "offset"
     )
 
-    // ESTO ES LO QUE ARREGLA EL ERROR: Creamos el Brush aquí afuera
+    //Brush
     val miGradiente = Brush.linearGradient(
         colors = listOf(Color.Cyan, Color.Magenta, Color.Yellow),
         start = Offset(offset, offset),
@@ -85,6 +86,7 @@ fun CharacterDetailScreen(
                         .padding(5.dp)
                         .clip(CircleShape)
                         .clickable {
+                            Log.d("CharacterDetail", "Nombre del personaje: ${character.name}")
                             val intent = Intent(Intent.ACTION_DIAL).apply {
                                 data = Uri.parse("tel:${character.id}")
                             }

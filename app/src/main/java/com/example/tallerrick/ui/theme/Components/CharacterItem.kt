@@ -40,19 +40,22 @@ fun CharacterItem(
                     .size(64.dp)
                     .clip(CircleShape)
             )
+
             Spacer(modifier = Modifier.width(12.dp))
+
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = "${character.name} - (${character.gender})",
+                    text = character.name,
                     fontSize = 14.sp,
                     fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
                 )
                 Text(
-                    text = "${character.species} - ${character.location.name}",
+                    text = "Status: ${character.status}",
                     fontSize = 12.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
+
             Icon(
                 imageVector = Icons.Default.KeyboardArrowRight,
                 contentDescription = "Ver detalle"

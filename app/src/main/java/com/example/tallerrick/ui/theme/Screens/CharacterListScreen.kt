@@ -1,62 +1,90 @@
 package com.example.tallerrick.ui.theme.Screens
-import com.example.tallerrick.ui.theme.Components.CharacterItem
 
 import android.util.Log
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Brightness4
+import androidx.compose.material.icons.filled.Brightness7
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.example.tallerrick.model.Character
-import com.example.tallerrick.network.CharacterRepository
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.Text
-import androidx.compose.foundation.layout.*
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.ui.graphics.Color
+import com.example.tallerrick.model.Character
+import com.example.tallerrick.ui.theme.Components.CharacterItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CharacterListScreen(
+    characters: List<Character>,
+    isLoading: Boolean,
+    error: String?,
+    onRetry: () -> Unit,
+    isDarkMode: Boolean,
+    onToggleDarkMode: () -> Unit,
     onCharacterClick: (Character) -> Unit
 ) {
-    var characters by remember { mutableStateOf<List<Character>>(emptyList()) }
-    var totalCount by remember { mutableStateOf(0) }
+    val countOnScreen = characters.size
 
-    LaunchedEffect(Unit) {
-        val response = CharacterRepository.getCharacters()
-        characters = response.results
-        totalCount = response.info.count
-        Log.d("CharacterList", "Cantidad de personajes: ${response.results.size}")
+    if (!isLoading && error == null) {
+        Log.d("CharacterList", "Cantidad de personajes: $countOnScreen")
     }
 
-    LazyColumn {
-        stickyHeader {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-            ) {
-                Text(
-                    text = "Total de personajes: $totalCount",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onPrimary,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
-                )
-            }
-        }
-
-        items(characters) { character ->
-            CharacterItem(
-                character = character,
-                onClick = { onCharacterClick(character) }
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Personajes: $countOnScreen") },
+                actions = {
+                    IconButton(onClick = onToggleDarkMode) {
+                        Icon(
+                            imageVector = if (isDarkMode) Icons.Filled.Brightness7 else Icons.Filled.Brightness4,
+                            contentDescription = if (isDarkMode) "Activar modo claro" else "Activar modo oscuro"
+                        )
+                    }
+                }
             )
+        }
+    ) { innerPadding ->
+
+        when {
+            isLoading -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding),
+                    contentAlignment = Alignment.Center
+                ) { CircularProgressIndicator() }
+            }
+
+            error != null -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text("Error: $error")
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Button(onClick = onRetry) { Text("Reintentar") }
+                    }
+                }
+            }
+
+            else -> {
+                LazyColumn(
+                    modifier = Modifier.padding(innerPadding)
+                ) {
+                    items(characters) { character ->
+                        CharacterItem(
+                            character = character,
+                            onClick = { onCharacterClick(character) }
+                        )
+                    }
+                }
+            }
         }
     }
 }
