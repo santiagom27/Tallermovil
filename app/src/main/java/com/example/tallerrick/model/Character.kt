@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 data class Location(
     val name: String
 )
-
+//objeto personaje
 @Serializable
 data class Character(
     val id: Int,
