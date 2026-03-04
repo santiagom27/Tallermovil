@@ -18,7 +18,7 @@ data class Character(
     val location: Location,
     val image: String
 )
-
+//objeto de la app
 @Serializable
 data class ApiInfo(
     val count: Int,
